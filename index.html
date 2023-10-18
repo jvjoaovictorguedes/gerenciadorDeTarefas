@@ -12,37 +12,53 @@
     </header>
     <main>
         <section>
-            <div>
-                <label for="novaTarefa">
-                    Insira a tarefa: 
-                </label>
-                <input type="text" name="novaTarefa" id="novaTarefa" style="margin: 10px 0;">
-                
-                <br>
-                <label for="prioridade">
-                    Qual é a prioridade: 
-                </label>
-                <select name="prioridade" id="prioridade">
-                    <option value="alta">Alta</option>
-                    <option value="media">Media</option>
-                    <option value="baixa">Baixa</option>
-                </select>
-                <br>
-                <label for="dataConclusao">
-                    Qual a data para concluir: 
-                </label>
-                <input type="date" name="dataConclusao" id="dataConclusao" style="margin: 10px 0;">
-                <br>
-                <input type="button" value="Inserir na lista" onclick="clicar()">
-                <br>
-                <select name="tarefas" id="tarefas" size="10">
-                    <!--JS -->
-                </select>
-                <input type="button" value="Remover item" onclick="removerItem()">
-            </div>
-            <div>
+                <form id="formularioEdicao" style="display: block;">
+                    <p>
+                        <label for="edicaoDescricao">Nome da Tarefa: </label>
+                        <input type="text" id="edicaoDescricao"><br>
+                    </p>
+                    <br>
+                    <p>
+                        <label for="edicaoPrioridade">Prioridade: </label>
+                    <select id="edicaoPrioridade">
+                        <option value="alta">Alta</option>
+                        <option value="media">Média</option>
+                        <option value="baixa">Baixa</option>
+                    </select>
+                    </p><br>
+                    <p>
+                        <label for="edicaoTempoLevado">Tempo Levado: </label>
+                        <input type="time" id="edicaoTempoLevado">
+                    </p><br>
+                    <input type="button" value="Salvar Alterações" onclick="salvarEdicao()">
+                </form>
+                <div id="modalEdicao" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="fecharModalEdicao()" style="cursor:pointer">&times;</span>
+                        <p>
+                            <label for="tarefaAlteracao">Nome Tarefa: </label>
+                            <input type="text" id="tarefaAlteracao">
+                        </p>
+                        <br>
+                        <p>
+                            <label for="prioridadeAlteracao">Prioridade:</label>
+                            <select id="prioridadeAlteracao">
+                                <option value="Alta">Alta</option>
+                                <option value="Média">Média</option>
+                                <option value="Baixa">Baixa</option>
+                            </select>
+                        </p>
+                        <br>
+                        <p>
+                            <label for="tempoAlteracao">Tempo Levado: </label>
+                            <input type="time" id="tempoAlteracao">
+                        </p>
+                        <br>
 
-            </div>
+                        <input type="button" value="Salvar Alterações" onclick="editarTarefa()">
+                    </div>
+                </div>
+                <ul id="listaTarefas"></ul>
         </section>
     </main>
     <footer></footer>

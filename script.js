@@ -1,94 +1,106 @@
-class Tarefa {
-    constructor(id, descricao, dataDeConclusao, prioridade) {
-        this.id = id;
-        this.descricao = descricao;
-        this.dataDeConclusao = dataDeConclusao;
-        this.prioridade = prioridade;
-    }
+let lista = [];
 
-    obterDetalhes() {
-        return `O id da tarefa é ${this.id}, ela tem como descricao ${this.descricao}, tem uma prioridade de ${this.prioridade}`
-    }
-}
-
-class ListaDeTarefas {
-    constructor(){
-        this.lista = [];
-    }
-
-    getVisualizacao() {
-        return this.lista;
-    }
-
-    adicionarTarefa(tarefa) {
-        this.lista.push(tarefa);
-    }
-
-    removerTarefa(id) {
-        this.lista = this.lista.filter(tarefa => tarefa.id !== id);
-    }
-
-
-    editarTarefa(id, novaDescricao, novaData, novaPrioridade) {
-        this.lista.forEach(tarefa => {
-            if (tarefa.id === id) {
-                tarefa.descricao = novaDescricao;
-                tarefa.dataDeConclusao = novaData;
-                tarefa.prioridade = novaPrioridade;
-            }
-        });
-}}
-
-
-let inputNovaTarefa = document.getElementById('novaTarefa');
-let selectTarefas = document.getElementById('tarefas');
-let prioridade = document.getElementById('prioridade');
-let dataConclusao = document.getElementById('dataConclusao');
-let data = new Date();
-let dia = data.getDate();
-let mes = (data.getMonth() + 1).toString().padStart(2, '0');
-let ano = data.getFullYear();
-let hoje = `${dia}/${mes}/${ano}`
-
-let listaDeTarefas = new ListaDeTarefas();
-
-
-function clicar(){
-    let dataFinal = new Date(dataConclusao.value);
-    let diaConclusao = dataFinal.getDate();
-    let mesConclusao = (dataFinal.getMonth() + 1).toString().padStart(2, '0');
-    let anoConclusao = dataFinal.getFullYear();
-    let hojeFinal = `${diaConclusao}/${mesConclusao}/${anoConclusao}`
-    console.log(hojeFinal)
-    if(hojeFinal < hoje) {
-        window.alert('Data inválida!')
-    } else {
-        let descricao = inputNovaTarefa.value;
-        let novaTarefa = new Tarefa(listaDeTarefas.lista.length + 1, descricao, '', 'Baixa');
-        listaDeTarefas.adicionarTarefa(novaTarefa); 
-        atualizarListaTarefas();
-}}
-
-
-function atualizarListaTarefas() {
-    selectTarefas.innerHTML = '';
-
-    listaDeTarefas.lista.forEach(tarefa => {
-    let option = document.createElement('option');
-    option.value = tarefa.id;
-    option.text = tarefa.descricao;
-    selectTarefas.add(option);
+function adicionarTarefa(nomeTarefa, prioridade, tempoLevado) {
+    let id = lista.length + 1;
+    lista.push({
+        id: id,
+        nomeTarefa: nomeTarefa,
+        prioridade: prioridade,
+        tempoLevado: tempoLevado
     });
+
+    return id;
 }
 
-function removerItem() {
-    let selecionada = selectTarefas.value;
-    if (selecionada !== '') {
-        listaDeTarefas.removerTarefa(Number(selecionada));
-        atualizarListaTarefas();
+function salvarEdicao() {
+    let tarefa = document.getElementById('edicaoDescricao').value;
+    let prior = document.getElementById('edicaoPrioridade').value;
+    let tempo = document.getElementById('edicaoTempoLevado').value;
+
+    adicionarTarefa(tarefa, prior, tempo);
+
+    atualizarListaTarefas();
+}
+
+function atualizarListaTarefas(id) {
+    let listaTarefasElement = document.getElementById('listaTarefas');
+    listaTarefasElement.innerHTML = ' ';
+    console.log(listaTarefasElement)
+    lista.forEach(tarefa => {
+        let listItem = document.createElement('li');
+        listItem.textContent = `Número: ${tarefa.id}, Tarefa: ${tarefa.nomeTarefa}, Tempo Levado: ${tarefa.tempoLevado}, Prioridade: ${tarefa.prioridade}`;
+
+        let editarButton = document.createElement('button');
+        editarButton.textContent = 'Editar';
+        editarButton.id = tarefa.id;
+
+        listItem.appendChild(editarButton);
+        listaTarefasElement.appendChild(listItem);
+
+        editarButton.addEventListener('click', function() {
+            abrirModalEdicao(tarefa.id);
+            
+        });        
+            
+    });
+    // Classificar o elemento com o ID passado
+    if (id) {
+        let elementoClassificado = document.getElementById(id);
+        if (elementoClassificado) {
+            elementoClassificado.classList.add(tarefa.id);
+        }
     }
 }
 
-let minhaTarefa = new Tarefa(1, 'Exemplo de tarefa', '2023-10-20', 'Alta');
-listaDeTarefas.adicionarTarefa(minhaTarefa);
-atualizarListaTarefas();
+
+function editarTarefa(id) {
+    console.log("Função editarTarefa foi chamada.");
+    let tarefaEditada = lista.find(tarefa => tarefa.id == id);
+
+    if (tarefaEditada) {
+        let tarefaAlt = document.getElementById('tarefaAlteracao').value;
+        let prioridadeAlt = document.getElementById('prioridadeAlteracao').value;
+        let tempoAlt = document.getElementById('tempoAlteracao').value;
+
+        tarefaEditada.nomeTarefa = tarefaAlt;
+        tarefaEditada.prioridade = prioridadeAlt;
+        tarefaEditada.tempoLevado = tempoAlt;
+    }
+    atualizarListaTarefas(id);
+}
+
+
+
+function preencherFormularioEdicao(tarefa) {
+    document.getElementById('edicaoDescricao').value = tarefa.nomeTarefa;
+    document.getElementById('edicaoPrioridade').value = tarefa.prioridade;
+    document.getElementById('edicaoTempoLevado').value = tarefa.tempoLevado;
+}
+
+function preencherFomularioAlteracao(tarefa) {
+    document.getElementById('tarefaAlteracao').value = tarefa.nomeTarefa;
+    document.getElementById('prioridadeAlteracao').value = tarefa.prioridade;
+    document.getElementById('tempoAlteracao').value = tarefa.tempoLevado;
+}
+
+function abrirModalEdicao(id) {
+    let form = document.getElementById('modalEdicao');
+    form.style.display = 'block';
+
+    let tarefa = lista.find(item => item.id === id);
+
+    if (tarefa) {
+        preencherFomularioAlteracao(tarefa);
+    }
+}
+
+function fecharModalEdicao(){
+    let form = document.getElementById('modalEdicao');
+    form.style.display = 'none';
+}
+
+
+document.getElementById('formularioEdicao').addEventListener('submit', function(event) {
+    event.preventDefault();
+    salvarEdicao();
+});
